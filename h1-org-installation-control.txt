@@ -1,1 +1,2 @@
 H1 org Mergify installation processing control fixture 20260727
+H1 workflow automation activation synchronize trigger 20260727
