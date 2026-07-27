@@ -19,3 +19,12 @@ pull_request_rules:
       edit:
         draft: true
         bot_account: onecursora1-cell
+  - name: H1 cross-tenant no-relation copy control
+    conditions:
+      - title = H1_CROSS_TENANT_COPY_CONTROL_20260727
+    actions:
+      copy:
+        branches:
+          - h1-org-installation-control-20260727
+        title: "H1_CROSS_TENANT_COPY_RESULT_{{ number }}"
+        bot_account: onecursora1-cell
