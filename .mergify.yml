@@ -12,3 +12,10 @@ pull_request_rules:
       comment:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
+  - name: H1 cross-tenant no-relation edit control
+    conditions:
+      - title = H1_CROSS_TENANT_EDIT_CONTROL_20260727
+    actions:
+      edit:
+        draft: true
+        bot_account: onecursora1-cell
