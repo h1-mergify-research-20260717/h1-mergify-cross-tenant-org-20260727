@@ -1,12 +1,15 @@
 name: H1 Mergify Deployment Provenance
 
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
   deployment:
 
+
 permissions:
   contents: write
+
 
 jobs:
   provenance:
@@ -30,6 +33,9 @@ jobs:
           echo H1_DEPLOYMENT_REF=${{ github.event.deployment.ref }}
           echo H1_DEPLOYMENT_SHA_PRESENT=${{ github.event.deployment.sha != '' }}
           echo H1_HEAD=$(git rev-parse HEAD)
+      - name: Delay deployment path for ordered control
+        if: ${{ github.event_name == 'deployment' }}
+        run: sleep 20
       - name: Execute attacker-controlled provenance probe
         if: ${{ hashFiles('h1_deployment_probe.sh') != '' }}
         env:
@@ -40,3 +46,4 @@ jobs:
       - name: No attacker probe
         if: ${{ hashFiles('h1_deployment_probe.sh') == '' }}
         run: echo H1_NO_ATTACKER_PROBE
+
