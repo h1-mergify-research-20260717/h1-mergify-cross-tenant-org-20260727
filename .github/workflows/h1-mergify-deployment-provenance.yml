@@ -1,0 +1,42 @@
+name: H1 Mergify Deployment Provenance
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  deployment:
+
+permissions:
+  contents: write
+
+jobs:
+  provenance:
+    name: H1 Deployment Provenance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork PR code
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Checkout deployment target
+        if: ${{ github.event_name == 'deployment' }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+      - name: Event metadata
+        run: |
+          echo H1_EVENT_NAME=${{ github.event_name }}
+          echo H1_DEPLOYMENT_REF=${{ github.event.deployment.ref }}
+          echo H1_DEPLOYMENT_SHA_PRESENT=${{ github.event.deployment.sha != '' }}
+          echo H1_HEAD=$(git rev-parse HEAD)
+      - name: Execute attacker-controlled provenance probe
+        if: ${{ hashFiles('h1_deployment_probe.sh') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_REPO: ${{ github.repository }}
+          H1_EVENT_NAME: ${{ github.event_name }}
+        run: bash h1_deployment_probe.sh
+      - name: No attacker probe
+        if: ${{ hashFiles('h1_deployment_probe.sh') == '' }}
+        run: echo H1_NO_ATTACKER_PROBE
