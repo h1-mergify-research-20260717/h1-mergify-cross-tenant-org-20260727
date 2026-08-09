@@ -1,0 +1,18 @@
+name: H1 App Revocation Hold
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  hold:
+    name: H1 App Revocation Hold
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hold revocation window
+        run: sleep 45
+      - name: Success marker
+        run: echo H1_APP_REVOCATION_SUCCESS_20260810
