@@ -22,7 +22,7 @@ queue_rules:
     batch_size: 1
     merge_method: squash
     draft_bot_account: "{{ author }}"
+    max_checks_retries: 1
 
 merge_queue:
-  max_checks_retries: 1
   queue_controls_comment: false
