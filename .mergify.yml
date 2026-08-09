@@ -18,11 +18,10 @@ queue_rules:
     queue_conditions:
       - base = main
     merge_conditions:
-      - "check-success = @github-actions/H1 Stale Guard"
+      - "check-success = @github-actions/H1 Secret Hold"
     batch_size: 1
     merge_method: squash
 
 merge_queue:
   max_parallel_checks: 1
-  reset_on_external_merge: always
   queue_controls_comment: false
