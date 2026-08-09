@@ -1,0 +1,36 @@
+name: H1 Base Deployment Positive Control
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize]
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  base-deployment:
+    if: contains(github.event.pull_request.title, 'H1 BASE DEPLOYMENT ENABLE 20260809')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create trusted base-repository deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_REPO: ${{ github.repository }}
+          TARGET_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          body="$(printf '{\"ref\":\"%s\",\"environment\":\"H1_TRUSTED_DEPLOYMENT_20260809\",\"auto_merge\":false,\"required_contexts\":[]}' "$TARGET_SHA")"
+          status="$(curl -sS -o /tmp/h1_dep.json -w '%{http_code}' -X POST -H "Authorization: Bearer ${GH_TOKEN}" -H 'Accept: application/vnd.github+json' -H 'Content-Type: application/json' "https://api.github.com/repos/${TARGET_REPO}/deployments" --data "$body")"
+          dep_id="$(python3 - <<'P'
+import json
+try: print(json.load(open('/tmp/h1_dep.json')).get('id',''))
+except: print('')
+P
+)"
+          echo "H1_BASE_DEPLOY_CREATE_STATUS=${status}"
+          echo "H1_BASE_DEPLOY_ID_PRESENT=$([ -n "$dep_id" ] && echo true || echo false)"
+          if [ -n "$dep_id" ]; then
+            s2="$(curl -sS -o /tmp/h1_dep_status.json -w '%{http_code}' -X POST -H "Authorization: Bearer ${GH_TOKEN}" -H 'Accept: application/vnd.github+json' -H 'Content-Type: application/json' "https://api.github.com/repos/${TARGET_REPO}/deployments/${dep_id}/statuses" --data '{"state":"success","environment":"H1_TRUSTED_DEPLOYMENT_20260809"}')"
+            echo "H1_BASE_DEPLOY_STATUS_STATUS=${s2}"
+          fi
