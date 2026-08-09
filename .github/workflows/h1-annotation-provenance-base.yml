@@ -12,12 +12,13 @@ jobs:
     name: H1 Annotation Provenance
     runs-on: ubuntu-latest
     steps:
-      - name: Controlled base failure without foreign marker
+      - name: Controlled target annotation positive control
         shell: bash
         run: |
           echo H1_BASE_RUN_ATTEMPT=${{ github.run_attempt }}
           if [ "${{ github.run_attempt }}" = "1" ]; then
-            echo H1_BASE_EXPECTED_FAILURE_WITHOUT_FOREIGN_MARKER_20260810
+            echo "::error file=h1-target-annotation.txt,line=1,col=1::H1_FOREIGN_ANNOTATION_ONLY_20260810"
+            echo H1_TARGET_ANNOTATION_PRESENT_20260810
             exit 1
           fi
-          echo H1_BASE_UNEXPECTED_RETRY_SUCCESS_20260810
+          echo H1_BASE_RETRY_SUCCESS_20260810
