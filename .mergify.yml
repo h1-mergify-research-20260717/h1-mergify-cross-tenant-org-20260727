@@ -12,10 +12,3 @@ pull_request_rules:
       comment:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
-
-merge_protections:
-  - name: H1 standalone freeze reevaluation control
-    if:
-      - base = main
-    success_conditions:
-      - base = main
