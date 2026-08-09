@@ -1,11 +1,4 @@
 pull_request_rules:
-  - name: H1 CodeOwner wrong-reviewer control
-    conditions:
-      - title = H1 CODEOWNER PROVENANCE CONTROL 20260810
-    actions:
-      review:
-        type: APPROVE
-        message: H1_MERGIFY_WRONG_CODEOWNER_REVIEW_20260810
   - name: H1 org installation processing control
     conditions:
       - title = H1_ORG_MERGIFY_INSTALLATION_CONTROL_20260727
@@ -19,23 +12,3 @@ pull_request_rules:
       comment:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
-
-queue_rules:
-  - name: default
-    queue_conditions:
-      - base = main
-    merge_conditions:
-      - base = main
-    batch_size: 1
-    merge_method: squash
-
-merge_queue:
-  max_parallel_checks: 1
-  queue_controls_comment: false
-
-merge_protections:
-  - name: H1 codeowner provenance protection
-    if:
-      - base = main
-    success_conditions:
-      - base = main
