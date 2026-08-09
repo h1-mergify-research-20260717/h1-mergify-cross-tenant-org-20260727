@@ -12,3 +12,17 @@ pull_request_rules:
       comment:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
+
+queue_rules:
+  - name: default
+    queue_conditions:
+      - base = main
+    merge_conditions:
+      - "check-success = @github-actions/H1 Dynamic Author Draft Guard"
+    batch_size: 1
+    merge_method: squash
+    draft_bot_account: "{{ author }}"
+
+merge_queue:
+  max_checks_retries: 1
+  queue_controls_comment: false
