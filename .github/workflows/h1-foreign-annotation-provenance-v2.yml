@@ -1,0 +1,20 @@
+name: H1 Foreign Annotation Producer V2
+
+on:
+  push:
+    branches:
+      - h1-foreign-annotation-provenance-v2-20260810
+
+permissions:
+  contents: read
+
+jobs:
+  annotation-provenance:
+    name: H1 Annotation Provenance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Emit fork-only check annotation
+        shell: bash
+        run: |
+          echo "::error file=h1-foreign-annotation.txt,line=1,col=1::H1_FOREIGN_ANNOTATION_ONLY_20260810"
+          echo H1_FORK_ANNOTATION_JOB_COMPLETED_20260810
