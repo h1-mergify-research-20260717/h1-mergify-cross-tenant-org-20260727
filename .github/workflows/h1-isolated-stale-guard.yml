@@ -1,0 +1,23 @@
+name: H1 Isolated Stale Base Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  guard:
+    name: H1 Isolated Stale Base Guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hold stale-base window
+        run: sleep 35
+      - name: Validate composed state
+        shell: bash
+        run: |
+          base_state="$(cat h1_isolated_base.txt 2>/dev/null || echo ALLOW)"
+          if [[ "$base_state" == "DENY" && -f h1_isolated_payload.txt ]]; then
+            echo H1_ISOLATED_STALE_BLOCK_20260809
+            exit 1
+          fi
+          echo H1_ISOLATED_STALE_OK_20260809
