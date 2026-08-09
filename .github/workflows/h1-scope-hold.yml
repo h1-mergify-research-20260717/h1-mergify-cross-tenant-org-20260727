@@ -1,0 +1,15 @@
+name: H1 Scope Hold
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  hold:
+    name: H1 Scope Hold
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hold scope-recomposition window
+        run: sleep 45
+      - name: Success marker
+        run: echo H1_SCOPE_HOLD_OK_20260809
