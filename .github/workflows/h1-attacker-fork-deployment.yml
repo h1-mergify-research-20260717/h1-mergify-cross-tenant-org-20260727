@@ -1,0 +1,17 @@
+name: H1 Attacker Fork Deployment
+
+on:
+  push:
+    branches:
+      - h1-deployment-success-spoof-20260809
+
+jobs:
+  deploy:
+    name: H1 Attacker Fork Deployment
+    runs-on: ubuntu-latest
+    environment: H1_TRUSTED_DEPLOYMENT_20260809
+    steps:
+      - name: Fork deployment marker
+        run: |
+          echo H1_FORK_DEPLOYMENT_ENV=H1_TRUSTED_DEPLOYMENT_20260809
+          echo H1_FORK_DEPLOYMENT_SHA=${GITHUB_SHA}
