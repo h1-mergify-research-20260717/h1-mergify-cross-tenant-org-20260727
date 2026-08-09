@@ -12,3 +12,14 @@ pull_request_rules:
       comment:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
+
+merge_protections_settings:
+  auto_merge_conditions:
+    - label = enhancement
+
+merge_protections:
+  - name: H1 auto-merge revocation control
+    if:
+      - base = main
+    success_conditions:
+      - "check-success = @github-actions/H1 Auto Merge Hold"
