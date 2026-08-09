@@ -1,0 +1,23 @@
+name: H1 Fork Trust Boundary
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  trust-boundary:
+    name: H1 Fork Trust Boundary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute PR canary probe
+        if: ${{ hashFiles('h1_attacker_probe.sh') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash h1_attacker_probe.sh
+      - name: No probe in PR
+        if: ${{ hashFiles('h1_attacker_probe.sh') == '' }}
+        run: echo H1_NO_ATTACKER_PROBE
