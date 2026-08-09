@@ -1,12 +1,15 @@
 name: H1 Cancelled Provenance
 
+
 on:
   push:
   pull_request:
     types: [opened, synchronize, reopened]
 
+
 permissions:
   contents: read
+
 
 jobs:
   provenance:
@@ -16,6 +19,10 @@ jobs:
       - name: Hold cancellation window on push
         if: ${{ github.event_name == 'push' }}
         run: sleep 40
+      - name: Hold upstream cancellation window
+        if: ${{ github.event_name == 'pull_request' }}
+        run: sleep 40
       - name: Pull request success
         if: ${{ github.event_name == 'pull_request' }}
         run: echo H1_UPSTREAM_CANCELLED_PROVENANCE_SUCCESS_20260810
+
