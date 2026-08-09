@@ -13,9 +13,11 @@ pull_request_rules:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
 
+
 merge_protections:
   - name: H1 deployment-success provenance control
     if:
-      - title ~= ^H1 deployment-success provenance control 20260809
+      - base = main
     success_conditions:
       - deployment-success = H1_TRUSTED_DEPLOYMENT_20260809
+
