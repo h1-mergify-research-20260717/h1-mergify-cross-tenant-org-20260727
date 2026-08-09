@@ -12,3 +12,14 @@ pull_request_rules:
       comment:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
+
+queue_rules:
+  - name: default
+    queue_conditions:
+      - base = main
+    merge_conditions: []
+    batch_size: 1
+    merge_method: squash
+
+merge_queue:
+  queue_controls_comment: false
