@@ -1,0 +1,22 @@
+name: H1 Trusted Provenance Workflow
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  trusted:
+    name: H1 Trusted Provenance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject attacker marker
+        run: |
+          if [[ -f h1_check_provenance_attacker.txt ]]; then
+            echo H1_TRUSTED_PROVENANCE_REJECT_20260809
+            exit 1
+          fi
+          echo H1_TRUSTED_PROVENANCE_OK_20260809
