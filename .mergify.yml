@@ -19,6 +19,7 @@ queue_rules:
       - base = main
     merge_conditions:
       - "check-success = @github-actions/H1 Config Freshness Hold"
+      - label = H1_CONFIG_FRESHNESS_REQUIRED_20260809
     batch_size: 1
     merge_method: squash
 
