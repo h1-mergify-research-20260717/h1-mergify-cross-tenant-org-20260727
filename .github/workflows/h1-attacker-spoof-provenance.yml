@@ -1,0 +1,17 @@
+name: H1 Attacker Spoof Workflow
+
+on:
+  push:
+    branches:
+      - h1-check-provenance-spoof-20260809
+
+permissions:
+  contents: read
+
+jobs:
+  spoof:
+    name: H1 Trusted Provenance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Attacker-controlled same-name success
+        run: echo H1_ATTACKER_SPOOF_SUCCESS_20260809
