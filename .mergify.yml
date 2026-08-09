@@ -22,8 +22,8 @@ queue_rules:
       - "check-success = @github-actions/H1 Merge Batch Guard"
     batch_size: 2
     merge_method: merge-batch
+    allow_queue_branch_edit: false
 
 merge_queue:
   max_parallel_checks: 1
-  allow_queue_branch_edit: false
   queue_controls_comment: false
