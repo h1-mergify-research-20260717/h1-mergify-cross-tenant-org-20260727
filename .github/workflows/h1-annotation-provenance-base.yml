@@ -1,0 +1,23 @@
+name: H1 Annotation Provenance Base
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  annotation-provenance:
+    name: H1 Annotation Provenance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Controlled base failure without foreign marker
+        shell: bash
+        run: |
+          echo H1_BASE_RUN_ATTEMPT=${{ github.run_attempt }}
+          if [ "${{ github.run_attempt }}" = "1" ]; then
+            echo H1_BASE_EXPECTED_FAILURE_WITHOUT_FOREIGN_MARKER_20260810
+            exit 1
+          fi
+          echo H1_BASE_UNEXPECTED_RETRY_SUCCESS_20260810
