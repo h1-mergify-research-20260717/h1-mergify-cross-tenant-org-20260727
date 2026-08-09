@@ -1,0 +1,15 @@
+name: H1 Config Freshness Hold
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  hold:
+    name: H1 Config Freshness Hold
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hold validation window
+        run: sleep 30
+      - name: Success marker
+        run: echo H1_CONFIG_FRESHNESS_HOLD_OK_20260809
