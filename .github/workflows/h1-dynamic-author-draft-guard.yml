@@ -1,0 +1,17 @@
+name: H1 Dynamic Author Draft Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  guard:
+    name: H1 Dynamic Author Draft Guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hold permission window
+        run: sleep 45
+      - name: Fail-safe stop
+        run: |
+          echo H1_DYNAMIC_AUTHOR_DRAFT_FAILSAFE_20260809
+          exit 1
