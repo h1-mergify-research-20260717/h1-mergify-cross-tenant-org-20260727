@@ -21,7 +21,7 @@ queue_rules:
       - "check-success = @github-actions/H1 Dynamic Author Draft Guard"
     batch_size: 1
     merge_method: squash
-    draft_bot_account: "{{ author }}"
+    draft_bot_account: "onecursor1-max"
     max_checks_retries: 1
 
 merge_queue:
