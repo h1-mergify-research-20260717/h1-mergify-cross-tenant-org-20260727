@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Hold scope-recomposition window
-        run: sleep 45
-      - name: Success marker
-        run: echo H1_SCOPE_HOLD_OK_20260809
+        run: sleep 60
+      - name: Fail-safe stop
+        run: |
+          echo H1_SCOPE_HOLD_FAILSAFE_20260809
+          exit 1
