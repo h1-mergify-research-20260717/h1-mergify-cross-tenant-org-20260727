@@ -1,11 +1,4 @@
 pull_request_rules:
-  - name: H1 secret team reviewer expansion oracle 20260810
-    conditions:
-      - title = H1 skip-off FIX normal-path control 20260810
-    actions:
-      request_reviews:
-        users_from_teams:
-          - h1-secret-membership-oracle-20260810
   - name: H1 org installation processing control
     conditions:
       - title = H1_ORG_MERGIFY_INSTALLATION_CONTROL_20260727
@@ -20,12 +13,10 @@ pull_request_rules:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
 
-
 commands_restrictions:
   queue:
     conditions:
       - sender = onecursor3-gif
-
 
 queue_rules:
   - name: h1-skip-off-control
@@ -37,10 +28,8 @@ queue_rules:
     batch_size: 1
     merge_method: squash
 
-
 merge_queue:
   mode: serial
   max_parallel_checks: 2
   skip_intermediate_results: false
   queue_controls_comment: false
-
