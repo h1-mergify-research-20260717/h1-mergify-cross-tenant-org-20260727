@@ -33,10 +33,3 @@ merge_queue:
   max_parallel_checks: 2
   skip_intermediate_results: false
   queue_controls_comment: false
-
-merge_protections:
-  - name: H1 dependency privacy retest 20260811
-    if:
-      - title = H1 dependency privacy control 20260809
-    success_conditions:
-      - base = main
