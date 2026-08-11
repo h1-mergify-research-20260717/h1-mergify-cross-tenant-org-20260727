@@ -16,7 +16,7 @@ pull_request_rules:
 commands_restrictions:
   queue:
     conditions:
-      - sender = onecursor3-gif
+      - sender = onecursor1-max
 
 queue_rules:
   - name: h1-skip-off-control
