@@ -1,11 +1,4 @@
 pull_request_rules:
-  - name: H1 secret team final report gate 20260811
-    conditions:
-      - title = H1_SECRET_FINAL_REPORT_READY_20260811
-    actions:
-      request_reviews:
-        users_from_teams:
-          - h1-secret-final-20260811
   - name: H1 org installation processing control
     conditions:
       - title = H1_ORG_MERGIFY_INSTALLATION_CONTROL_20260727
