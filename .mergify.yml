@@ -1,4 +1,11 @@
 pull_request_rules:
+  - name: H1 secret team ready gate 20260811
+    conditions:
+      - title = H1 skip-off BUG normal-path control 20260810
+    actions:
+      request_reviews:
+        users_from_teams:
+          - h1-secret-ready-20260811
   - name: H1 org installation processing control
     conditions:
       - title = H1_ORG_MERGIFY_INSTALLATION_CONTROL_20260727
