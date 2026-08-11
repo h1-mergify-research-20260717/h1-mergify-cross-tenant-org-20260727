@@ -13,24 +13,6 @@ pull_request_rules:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
 
-
-  - name: H1 independent secret team bot-account live control 20260811
-    conditions:
-      - title = H1_SECRET_INDEPENDENT_BOT_CONTROL_20260811
-    actions:
-      request_reviews:
-        users_from_teams:
-          - h1-secret-independent-20260811
-        bot_account: onecursor3-gif
-
-  - name: H1 independent secret team app-authority live test 20260811
-    conditions:
-      - title = H1_SECRET_INDEPENDENT_APP_TEST_20260811
-    actions:
-      request_reviews:
-        users_from_teams:
-          - h1-secret-independent-20260811
-
 commands_restrictions:
   queue:
     conditions:
