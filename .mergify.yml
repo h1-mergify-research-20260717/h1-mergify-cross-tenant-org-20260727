@@ -1,35 +1,22 @@
-pull_request_rules:
-  - name: H1 org installation processing control
-    conditions:
-      - title = H1_ORG_MERGIFY_INSTALLATION_CONTROL_20260727
-    actions:
-      comment:
-        message: H1_ORG_MERGIFY_INSTALLATION_MARKER_20260727
-  - name: H1 cross-tenant no-relation control
-    conditions:
-      - title = H1_CROSS_TENANT_NO_RELATION_CONTROL_20260727
-    actions:
-      comment:
-        message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
-        bot_account: onecursora1-cell
-
 commands_restrictions:
   queue:
     conditions:
-      - sender = onecursor3-gif
+      - sender = onecursor1-max
 
 queue_rules:
-  - name: h1-skip-off-control
+  - name: H1 checks timeout fail-closed 20260813
     queue_conditions:
-      - base = main
-    merge_conditions:
-      - check-success = @github-actions/H1 skip-off normal-path control
+      - base = h1-checks-timeout-target-20260813
+    merge_conditions: []
     branch_protection_injection_mode: merge
     batch_size: 1
+    allow_inplace_checks: false
+    checks_timeout: 1 min
+    max_checks_retries: 0
     merge_method: squash
 
 merge_queue:
   mode: serial
-  max_parallel_checks: 2
+  max_parallel_checks: 1
   skip_intermediate_results: false
   queue_controls_comment: false
