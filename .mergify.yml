@@ -1,29 +1,14 @@
-pull_request_rules:
-  - name: H1 org installation processing control
-    conditions:
-      - title = H1_ORG_MERGIFY_INSTALLATION_CONTROL_20260727
-    actions:
-      comment:
-        message: H1_ORG_MERGIFY_INSTALLATION_MARKER_20260727
-  - name: H1 cross-tenant no-relation control
-    conditions:
-      - title = H1_CROSS_TENANT_NO_RELATION_CONTROL_20260727
-    actions:
-      comment:
-        message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
-        bot_account: onecursora1-cell
-
 commands_restrictions:
   queue:
     conditions:
       - sender = onecursor3-gif
 
 queue_rules:
-  - name: h1-skip-off-control
+  - name: H1 fork provenance ref integrity fresh 20260812
     queue_conditions:
-      - base = main
+      - base = h1-fork-prov-ref-target-20260812
     merge_conditions:
-      - check-success = @github-actions/H1 skip-off normal-path control
+      - label = H1_NEVER_MERGE_FORK_PROV_REF_20260812
     branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
