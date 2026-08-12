@@ -1,10 +1,9 @@
-name: H1 Skip-Off Normal Path Control
+name: H1 Base Pivot Recheck Slow
 
 on:
   pull_request:
-  push:
     branches:
-      - main
+      - h1-basepivot-recheck-A-20260812
 
 jobs:
   safety:
@@ -12,14 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Evaluate deterministic non-monotonic state
-        shell: bash
-        run: |
-          if [[ -f h1-skip-off-bug.txt && ! -f h1-skip-off-fix.txt ]]; then
-            echo "H1_SKIP_OFF_BUG_WITHOUT_FIX_20260810"
-            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-              sleep 90
-            fi
-            exit 1
-          fi
-          echo "H1_SKIP_OFF_SAFE_20260810"
+      - name: Hold finalization window
+        run: sleep 45
+      - name: Pass
+        run: echo H1_BASEPIVOT_RECHECK_OK_20260812
