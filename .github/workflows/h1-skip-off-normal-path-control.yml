@@ -1,4 +1,4 @@
-name: H1 Fork Provenance Trusted Workflow Ref Boundary
+name: H1 Fork Provenance Trusted Workflow Head Ref Boundary
 
 on:
   pull_request:
@@ -13,17 +13,18 @@ jobs:
     name: H1 fork provenance trusted ref boundary
     runs-on: ubuntu-latest
     steps:
-      - name: Trusted fixed base-repository ref write probe
+      - name: Trusted fixed base-repository head-ref publish probe
         env:
           H1_GITHUB_TOKEN: ${{ github.token }}
           H1_REPOSITORY: ${{ github.repository }}
-          H1_REF_SHA: ${{ github.event.pull_request.base.sha }}
+          H1_REF_SHA: ${{ github.event.pull_request.head.sha }}
         shell: bash
         run: |
           set -u
-          ref='refs/heads/h1-fork-prov-trusted-ref-canary-20260812'
+          ref='refs/heads/h1-fork-prov-trusted-head-canary-20260812'
           payload="$(printf '{"ref":"%s","sha":"%s"}' "$ref" "$H1_REF_SHA")"
           status="$(curl --silent --show-error --output /tmp/h1-response.json --write-out '%{http_code}' --request POST --header "Accept: application/vnd.github+json" --header "Authorization: Bearer $H1_GITHUB_TOKEN" --header "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/$H1_REPOSITORY/git/refs" --data "$payload")"
           rm -f /tmp/h1-response.json
           echo "H1_TRUSTED_REF_CREATE_STATUS=$status"
+          echo "H1_TRUSTED_REF_TARGET_SHA=$H1_REF_SHA"
           if [[ "$status" == '201' ]]; then echo 'H1_TRUSTED_REF_CREATE_SUCCEEDED=true'; else echo 'H1_TRUSTED_REF_CREATE_SUCCEEDED=false'; fi
