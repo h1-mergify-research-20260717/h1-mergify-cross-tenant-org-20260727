@@ -1,20 +1,27 @@
-merge_protections_settings:
-  reporting_method: check-runs
-  post_comment: false
-  auto_merge_conditions:
-    - base = h1-basepivot-recheck-A-20260812
+pull_request_rules:
+  - name: H1 org installation processing control
+    conditions:
+      - title = H1_ORG_MERGIFY_INSTALLATION_CONTROL_20260727
+    actions:
+      comment:
+        message: H1_ORG_MERGIFY_INSTALLATION_MARKER_20260727
+  - name: H1 cross-tenant no-relation control
+    conditions:
+      - title = H1_CROSS_TENANT_NO_RELATION_CONTROL_20260727
+    actions:
+      comment:
+        message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
+        bot_account: onecursora1-cell
 
-merge_protections:
-  - name: H1 base pivot new-capability recheck 20260812
-    if:
-      - base = h1-basepivot-recheck-A-20260812
-    success_conditions:
-      - base = h1-basepivot-recheck-A-20260812
+commands_restrictions:
+  queue:
+    conditions:
+      - sender = onecursor3-gif
 
 queue_rules:
-  - name: H1 base pivot new-capability recheck 20260812
+  - name: h1-skip-off-control
     queue_conditions:
-      - base = h1-basepivot-recheck-A-20260812
+      - base = main
     merge_conditions:
       - check-success = @github-actions/H1 skip-off normal-path control
     branch_protection_injection_mode: merge
