@@ -4,16 +4,16 @@ merge_protections_settings:
   auto_merge_conditions: true
 
 merge_protections:
-  - name: H1 dequeue attacker autopush 20260812
+  - name: H1 dequeue attacker autopush slow 20260812
     if:
-      - base = h1-dequeue-autopush-target-20260812
+      - base = h1-dequeue-autopush-slow-target-20260812
     success_conditions:
-      - base = h1-dequeue-autopush-target-20260812
+      - base = h1-dequeue-autopush-slow-target-20260812
 
 queue_rules:
-  - name: H1 dequeue attacker autopush 20260812
+  - name: H1 dequeue attacker autopush slow 20260812
     queue_conditions:
-      - base = h1-dequeue-autopush-target-20260812
+      - base = h1-dequeue-autopush-slow-target-20260812
     merge_conditions:
       - check-success = @github-actions/H1 skip-off normal-path control
     branch_protection_injection_mode: merge
