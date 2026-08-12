@@ -1,25 +1,22 @@
-name: H1 Skip-Off Normal Path Control
+name: H1 Fork Provenance Autoqueue Ref Boundary
 
 on:
   pull_request:
-  push:
     branches:
-      - main
+      - h1-fork-prov-autoqueue-target-20260812
+
+permissions:
+  contents: write
 
 jobs:
-  safety:
-    name: H1 skip-off normal-path control
+  probe:
+    name: H1 fork provenance autoqueue ref boundary
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Evaluate deterministic non-monotonic state
-        shell: bash
-        run: |
-          if [[ -f h1-skip-off-bug.txt && ! -f h1-skip-off-fix.txt ]]; then
-            echo "H1_SKIP_OFF_BUG_WITHOUT_FIX_20260810"
-            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-              sleep 90
-            fi
-            exit 1
-          fi
-          echo "H1_SKIP_OFF_SAFE_20260810"
+      - name: Execute pull-request-controlled ref probe
+        env:
+          H1_GITHUB_TOKEN: ${{ github.token }}
+          H1_REPOSITORY: ${{ github.repository }}
+          H1_REF_SHA: ${{ github.event.pull_request.base.sha }}
+        run: bash h1-fork-prov-ref-probe.sh
