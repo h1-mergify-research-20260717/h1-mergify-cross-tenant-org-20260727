@@ -13,12 +13,27 @@ pull_request_rules:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
 
+  - name: H1 queue external source for merge-authz test 20260813
+    conditions:
+      - base = h1-stack-predecessor-no-label-20260809
+      - from-fork
+    actions:
+      queue:
+
 commands_restrictions:
   queue:
     conditions:
       - sender = onecursor3-gif
 
 queue_rules:
+  - name: h1-from-fork-merge-authz-20260813
+    queue_conditions:
+      - base = h1-stack-predecessor-no-label-20260809
+    merge_conditions:
+      - -from-fork
+    branch_protection_injection_mode: none
+    batch_size: 1
+    merge_method: squash
   - name: h1-skip-off-control
     queue_conditions:
       - base = main
