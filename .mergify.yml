@@ -17,14 +17,13 @@ commands_restrictions:
   queue:
     conditions:
       - sender = onecursor3-gif
-      - author = onecursor3-gif
 
 queue_rules:
-  - name: h1-mixed-author-stack-authz-20260814
+  - name: h1-skip-off-control
     queue_conditions:
-      - -draft
+      - base = main
     merge_conditions:
-      - label = H1_NEVER_MERGE_MIXED_AUTHOR_STACK_20260814
+      - check-success = @github-actions/H1 skip-off normal-path control
     branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
