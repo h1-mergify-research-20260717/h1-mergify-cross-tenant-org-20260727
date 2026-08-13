@@ -13,7 +13,7 @@ pull_request_rules:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
 
-  - name: H1 Gate2 ordinary isolated queue 20260813
+  - name: H1 Gate2 in-place primitive-removal queue 20260813
     conditions:
       - base = h1-mergify-ti-secret-target-20260813
     actions:
@@ -25,11 +25,9 @@ commands_restrictions:
       - sender = onecursor3-gif
 
 queue_rules:
-  - name: h1-gate2-ordinary-queue-20260813
+  - name: h1-gate2-inplace-primitive-removal-20260813
     queue_conditions:
       - base = h1-mergify-ti-secret-target-20260813
-    merge_conditions:
-      - label = H1_NEVER_MERGE_GATE2_SECRET_20260813
     branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
@@ -44,6 +42,6 @@ queue_rules:
 
 merge_queue:
   mode: serial
-  max_parallel_checks: 2
+  max_parallel_checks: 1
   skip_intermediate_results: false
   queue_controls_comment: false
