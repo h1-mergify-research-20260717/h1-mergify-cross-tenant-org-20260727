@@ -1,25 +1,85 @@
-name: H1 Skip-Off Normal Path Control
+name: H1 Mergify Source Provenance Trust Control
 
 on:
   pull_request:
-  push:
     branches:
-      - main
+      - h1-fork-prov-source-aware-target-20260813
 
 jobs:
-  safety:
-    name: H1 skip-off normal-path control
+  source-provenance:
+    name: H1 source provenance classifier
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      trusted: ${{ steps.classify.outputs.trusted }}
+      source_numbers: ${{ steps.classify.outputs.source_numbers }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Evaluate deterministic non-monotonic state
+      - name: Resolve original source provenance
+        id: classify
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          H1_PR_NUMBER: ${{ github.event.pull_request.number }}
+          H1_CURRENT_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          H1_CURRENT_HEAD_REF: ${{ github.event.pull_request.head.ref }}
         shell: bash
         run: |
-          if [[ -f h1-skip-off-bug.txt && ! -f h1-skip-off-fix.txt ]]; then
-            echo "H1_SKIP_OFF_BUG_WITHOUT_FIX_20260810"
-            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-              sleep 90
+          set -euo pipefail
+
+          trusted=true
+          source_numbers="$H1_PR_NUMBER"
+
+          if [[ "$H1_CURRENT_HEAD_REF" == mergify/merge-queue/* ]]; then
+            body="$(gh api "repos/$GH_REPO/pulls/$H1_PR_NUMBER" --jq .body)"
+            metadata="$(printf '%s\n' "$body" | sed -n -e '/```yaml/,/```/p' | sed -e '1d;$d')"
+            source_numbers="$(printf '%s\n' "$metadata" | python3 -c 'import re,sys; print(",".join(re.findall(r"^\\s*-\\s+number:\\s*(\\d+)\\s*$", sys.stdin.read(), re.M)))')"
+            if [[ -z "$source_numbers" ]]; then
+              trusted=false
             fi
-            exit 1
           fi
-          echo "H1_SKIP_OFF_SAFE_20260810"
+
+          IFS=',' read -r -a sources <<< "$source_numbers"
+          for pr in "${sources[@]}"; do
+            [[ -n "$pr" ]] || continue
+            source_repo="$(gh api "repos/$GH_REPO/pulls/$pr" --jq .head.repo.full_name)"
+            source_fork="$(gh api "repos/$GH_REPO/pulls/$pr" --jq .head.repo.fork)"
+            echo "H1_SOURCE_PR=$pr"
+            echo "H1_SOURCE_HEAD_REPO=$source_repo"
+            echo "H1_SOURCE_HEAD_FORK=$source_fork"
+            if [[ "$source_repo" != "$GH_REPO" || "$source_fork" != "false" ]]; then
+              trusted=false
+            fi
+          done
+
+          echo "H1_CURRENT_HEAD_REPO=$H1_CURRENT_HEAD_REPO"
+          echo "H1_CURRENT_HEAD_REF=$H1_CURRENT_HEAD_REF"
+          echo "H1_SOURCE_NUMBERS=$source_numbers"
+          echo "H1_SOURCE_TRUSTED=$trusted"
+          echo "trusted=$trusted" >> "$GITHUB_OUTPUT"
+          echo "source_numbers=$source_numbers" >> "$GITHUB_OUTPUT"
+
+  trusted-publish:
+    name: H1 source-aware trusted publisher
+    needs: source-provenance
+    if: ${{ needs.source-provenance.outputs.trusted == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Publish only source-trusted PR head
+        env:
+          H1_GITHUB_TOKEN: ${{ github.token }}
+          H1_REPOSITORY: ${{ github.repository }}
+          H1_REF_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ref='refs/heads/h1-fork-prov-source-aware-canary-20260813'
+          payload="$(printf '{\"ref\":\"%s\",\"sha\":\"%s\"}' "$ref" "$H1_REF_SHA")"
+          status="$(curl --silent --show-error --output /tmp/h1-response.json --write-out '%{http_code}' --request POST --header "Accept: application/vnd.github+json" --header "Authorization: Bearer $H1_GITHUB_TOKEN" --header "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/$H1_REPOSITORY/git/refs" --data "$payload")"
+          rm -f /tmp/h1-response.json
+          echo "H1_SOURCE_AWARE_REF_TARGET_SHA=$H1_REF_SHA"
+          echo "H1_SOURCE_AWARE_REF_CREATE_STATUS=$status"
+          echo "H1_SOURCE_AWARE_REF_CREATE_SUCCEEDED=$([[ "$status" == '201' ]] && echo true || echo false)"
