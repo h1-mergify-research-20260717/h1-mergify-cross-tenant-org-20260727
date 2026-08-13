@@ -38,7 +38,7 @@ jobs:
           fi
 
   trusted-publish:
-    name: H1 documented head-repo guarded publisher
+    name: H1 documented head-repo guarded secret publisher
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_repository.full_name == github.repository
@@ -46,18 +46,29 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Publish workflow_run head under fixed base-repository ref
+      - name: Publish harmless repository-secret canary only for trusted CI origin
         env:
           H1_GITHUB_TOKEN: ${{ github.token }}
           H1_REPOSITORY: ${{ github.repository }}
           H1_REF_SHA: ${{ github.event.workflow_run.head_sha }}
+          H1_CANARY_SECRET: ${{ secrets.H1_FORK_ORIGIN_SECRET_20260813 }}
         shell: bash
         run: |
           set -euo pipefail
-          ref='refs/heads/h1-fork-prov-workflow-run-canary-20260813'
-          payload="$(printf '{\"ref\":\"%s\",\"sha\":\"%s\"}' "$ref" "$H1_REF_SHA")"
-          status="$(curl --silent --show-error --output /tmp/h1-response.json --write-out '%{http_code}' --request POST --header "Accept: application/vnd.github+json" --header "Authorization: Bearer $H1_GITHUB_TOKEN" --header "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/$H1_REPOSITORY/git/refs" --data "$payload")"
-          rm -f /tmp/h1-response.json
-          echo "H1_WORKFLOW_RUN_REF_TARGET_SHA=$H1_REF_SHA"
-          echo "H1_WORKFLOW_RUN_REF_CREATE_STATUS=$status"
-          echo "H1_WORKFLOW_RUN_REF_CREATE_SUCCEEDED=$([[ "$status" == '201' ]] && echo true || echo false)"
+          test -n "$H1_CANARY_SECRET"
+
+          branch='h1-fork-prov-workflow-run-canary-20260813'
+          ref="refs/heads/$branch"
+          ref_payload="$(printf '{\"ref\":\"%s\",\"sha\":\"%s\"}' "$ref" "$H1_REF_SHA")"
+          ref_status="$(curl --silent --show-error --output /tmp/h1-ref-response.json --write-out '%{http_code}' --request POST --header "Accept: application/vnd.github+json" --header "Authorization: Bearer $H1_GITHUB_TOKEN" --header "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/$H1_REPOSITORY/git/refs" --data "$ref_payload")"
+          rm -f /tmp/h1-ref-response.json
+          echo "H1_SECRET_REF_CREATE_STATUS=$ref_status"
+          test "$ref_status" = '201'
+
+          secret_b64="$(printf '%s' "$H1_CANARY_SECRET" | base64 -w0)"
+          file_payload="$(jq -cn --arg message 'H1 harmless secret canary publication 20260813' --arg content "$secret_b64" --arg branch "$branch" '{message:$message,content:$content,branch:$branch}')"
+          file_status="$(curl --silent --show-error --output /tmp/h1-file-response.json --write-out '%{http_code}' --request PUT --header "Accept: application/vnd.github+json" --header "Authorization: Bearer $H1_GITHUB_TOKEN" --header "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/$H1_REPOSITORY/contents/h1-workflow-run-secret-canary-20260813.txt" --data "$file_payload")"
+          rm -f /tmp/h1-file-response.json
+          echo "H1_SECRET_FILE_CREATE_STATUS=$file_status"
+          test "$file_status" = '201'
+          echo 'H1_SECRET_CANARY_PUBLISHED=true'
