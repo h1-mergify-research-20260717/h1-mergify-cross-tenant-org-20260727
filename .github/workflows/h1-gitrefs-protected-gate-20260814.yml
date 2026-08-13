@@ -1,0 +1,45 @@
+name: H1 gitrefs protected gate 20260814
+
+on:
+  pull_request:
+    branches:
+      - h1-gitrefs-target-20260814
+
+permissions:
+  contents: read
+
+jobs:
+  protected-gate:
+    name: H1 gitrefs protected gate 20260814
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install official Mergify CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL https://raw.githubusercontent.com/Mergifyio/mergify-cli/main/install.sh | sh
+
+      - name: Resolve trusted merge-queue diff and enforce critical path
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          eval "$(mergify ci git-refs --format=shell)"
+          echo "source=$MERGIFY_GIT_REFS_SOURCE"
+          echo "base=$MERGIFY_GIT_REFS_BASE"
+          echo "head=$MERGIFY_GIT_REFS_HEAD"
+          test -n "$MERGIFY_GIT_REFS_BASE"
+          git cat-file -e "$MERGIFY_GIT_REFS_BASE^{commit}"
+          git cat-file -e "$MERGIFY_GIT_REFS_HEAD^{commit}"
+          git diff --name-only "$MERGIFY_GIT_REFS_BASE" "$MERGIFY_GIT_REFS_HEAD" | tee /tmp/h1-changed-files.txt
+          if grep -Fxq 'critical/h1-gitrefs-guard-20260814.txt' /tmp/h1-changed-files.txt; then
+            echo 'H1 critical path changed: blocking required CI'
+            exit 1
+          fi
+          echo 'H1 no critical path change: required CI passes'
+
