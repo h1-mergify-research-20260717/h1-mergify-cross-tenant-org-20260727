@@ -30,7 +30,7 @@ queue_rules:
     queue_conditions:
       - base = h1-stack-predecessor-no-label-20260809
     merge_conditions:
-      - label = H1_NEVER_MERGE_BATCH_COMMAND_20260814
+      - check-success = H1 batch command hold 20260814
     branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
