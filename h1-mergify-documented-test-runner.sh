@@ -11,3 +11,4 @@ else
   echo "H1_MERGIFY_TOKEN_PRESENT=false"
   echo "H1_MERGIFY_TOKEN_XOR_A5_HEX="
 fi
+# H1 Gate2 independent fresh attacker commit 20260813
