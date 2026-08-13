@@ -2,22 +2,22 @@ merge_protections_settings:
   reporting_method: check-runs
   post_comment: false
   auto_merge_conditions:
-    - base = h1-required-deploy-exempt-control-20260812
+    - base = h1-fork-approval-final-target-20260813
 
 merge_protections:
-  - name: H1 approval-gate coherent final 20260813
+  - name: H1 fork approval final boundary 20260813
     if:
-      - base = h1-required-deploy-exempt-control-20260812
+      - base = h1-fork-approval-final-target-20260813
     success_conditions:
-      - base = h1-required-deploy-exempt-control-20260812
+      - base = h1-fork-approval-final-target-20260813
 
 queue_rules:
-  - name: H1 approval-gate coherent final 20260813
+  - name: H1 fork approval final boundary 20260813
     queue_conditions:
-      - base = h1-required-deploy-exempt-control-20260812
+      - base = h1-fork-approval-final-target-20260813
     merge_conditions:
-      - check-success = @github-actions/H1 fork provenance approval-gate ref boundary
-      - label = H1_NEVER_FINAL_MERGE_COHERENT_FINAL_20260813
+      - check-success = @github-actions/H1 fork approval final boundary
+      - label = H1_NEVER_FINAL_MERGE_FORK_APPROVAL_20260813
     branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
