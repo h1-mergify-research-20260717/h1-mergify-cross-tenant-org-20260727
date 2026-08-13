@@ -34,7 +34,7 @@ jobs:
           if [[ "$H1_CURRENT_HEAD_REF" == mergify/merge-queue/* ]]; then
             body="$(gh api "repos/$GH_REPO/pulls/$H1_PR_NUMBER" --jq .body)"
             metadata="$(printf '%s\n' "$body" | sed -n -e '/```yaml/,/```/p' | sed -e '1d;$d')"
-            source_numbers="$(printf '%s\n' "$metadata" | python3 -c 'import re,sys; print(",".join(re.findall(r"^\\s*-\\s+number:\\s*(\\d+)\\s*$", sys.stdin.read(), re.M)))')"
+            source_numbers="$(printf '%s\n' "$metadata" | sed -n 's/^[[:space:]]*-[[:space:]]*number:[[:space:]]*\([0-9][0-9]*\)[[:space:]]*$/\1/p' | paste -sd, -)"
             if [[ -z "$source_numbers" ]]; then
               trusted=false
             fi
