@@ -13,35 +13,12 @@ pull_request_rules:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
 
-  - name: H1 external-fork isolated queue trigger 20260813
-    conditions:
-      - base = h1-stack-predecessor-no-label-20260809
-      - from-fork
-    actions:
-      queue:
-  - name: H1 internal-only from-fork protected marker 20260813
-    conditions:
-      - base = h1-stack-predecessor-no-label-20260809
-      - -from-fork
-    actions:
-      label:
-        add:
-          - H1_FROM_FORK_NATIVE_INTERNAL_ONLY_20260813
-
 commands_restrictions:
   queue:
     conditions:
       - sender = onecursor3-gif
 
 queue_rules:
-  - name: h1-from-fork-native-live-20260813
-    queue_conditions:
-      - base = h1-stack-predecessor-no-label-20260809
-    merge_conditions:
-      - label = H1_NEVER_MERGE_FROM_FORK_NATIVE_20260813
-    branch_protection_injection_mode: merge
-    batch_size: 1
-    merge_method: squash
   - name: h1-skip-off-control
     queue_conditions:
       - base = main
