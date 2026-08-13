@@ -13,10 +13,9 @@ pull_request_rules:
         message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
         bot_account: onecursora1-cell
 
-  - name: H1 Test Insights external-fork secret-boundary queue 20260813
+  - name: H1 Gate2 ordinary isolated queue 20260813
     conditions:
       - base = h1-mergify-ti-secret-target-20260813
-      - from-fork
     actions:
       queue:
 
@@ -26,11 +25,11 @@ commands_restrictions:
       - sender = onecursor3-gif
 
 queue_rules:
-  - name: h1-ti-natural-secret-boundary-20260813
+  - name: h1-gate2-ordinary-queue-20260813
     queue_conditions:
       - base = h1-mergify-ti-secret-target-20260813
     merge_conditions:
-      - label = H1_NEVER_MERGE_TI_SECRET_20260813
+      - label = H1_NEVER_MERGE_GATE2_SECRET_20260813
     branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
