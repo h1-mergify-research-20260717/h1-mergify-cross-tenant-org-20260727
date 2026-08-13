@@ -26,7 +26,7 @@ queue_rules:
       - check-success = @github-actions/H1 gitrefs protected gate 20260814
     branch_protection_injection_mode: merge
     batch_size: 1
-    merge_method: squash
+    merge_method: fast-forward
 
   - name: h1-skip-off-control
     queue_conditions:
