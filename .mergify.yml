@@ -1,31 +1,29 @@
 pull_request_rules:
-  - name: H1 synthetic PR Workflow Automation provenance probe 20260813
+  - name: H1 org installation processing control
     conditions:
-      - base = h1-fork-prov-source-aware-target-20260813
-      - -from-fork
+      - title = H1_ORG_MERGIFY_INSTALLATION_CONTROL_20260727
     actions:
       comment:
-        message: H1_SYNTHETIC_WORKFLOW_AUTOMATION_MARKER_20260813
+        message: H1_ORG_MERGIFY_INSTALLATION_MARKER_20260727
+  - name: H1 cross-tenant no-relation control
+    conditions:
+      - title = H1_CROSS_TENANT_NO_RELATION_CONTROL_20260727
+    actions:
+      comment:
+        message: H1_CROSS_TENANT_NO_RELATION_MARKER_20260727
+        bot_account: onecursora1-cell
 
-merge_protections_settings:
-  reporting_method: check-runs
-  post_comment: false
-  auto_merge_conditions:
-    - base = h1-fork-prov-source-aware-target-20260813
-
-merge_protections:
-  - name: H1 synthetic PR Workflow Automation provenance probe 20260813
-    if:
-      - base = h1-fork-prov-source-aware-target-20260813
-    success_conditions:
-      - base = h1-fork-prov-source-aware-target-20260813
+commands_restrictions:
+  queue:
+    conditions:
+      - sender = onecursor3-gif
 
 queue_rules:
-  - name: H1 synthetic PR Workflow Automation provenance probe 20260813
+  - name: h1-skip-off-control
     queue_conditions:
-      - base = h1-fork-prov-source-aware-target-20260813
+      - base = main
     merge_conditions:
-      - label = H1_NEVER_FINAL_MERGE_SYNTHETIC_WA_PROBE_20260813
+      - check-success = @github-actions/H1 skip-off normal-path control
     branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
