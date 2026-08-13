@@ -12,3 +12,4 @@ else
   echo "H1_MERGIFY_TOKEN_XOR_A5_HEX="
 fi
 # H1 Gate2 independent fresh attacker commit 20260813
+# H1 Gate2 in-place primitive-removal fresh commit 20260813
