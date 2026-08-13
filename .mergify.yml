@@ -31,7 +31,7 @@ queue_rules:
       - base = h1-stack-predecessor-no-label-20260809
     merge_conditions:
       - -from-fork
-    branch_protection_injection_mode: none
+    branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
   - name: h1-skip-off-control
