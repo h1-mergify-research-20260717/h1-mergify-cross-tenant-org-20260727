@@ -23,7 +23,7 @@ queue_rules:
     queue_conditions:
       - base = main
     merge_conditions:
-      - label = H1_NEVER_MERGE_READ_PAUSE_IMPACT_20260814
+      - check-success = @github-actions/H1 skip-off normal-path control
     branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
