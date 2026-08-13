@@ -5,14 +5,14 @@ merge_protections_settings:
     - base = h1-fork-prov-workflow-run-target-20260813
 
 merge_protections:
-  - name: H1 workflow-run in-place counterfactual 20260813
+  - name: H1 workflow-run secret boundary E2E 20260813
     if:
       - base = h1-fork-prov-workflow-run-target-20260813
     success_conditions:
       - base = h1-fork-prov-workflow-run-target-20260813
 
 queue_rules:
-  - name: H1 workflow-run in-place counterfactual 20260813
+  - name: H1 workflow-run secret boundary E2E 20260813
     queue_conditions:
       - base = h1-fork-prov-workflow-run-target-20260813
     merge_conditions:
@@ -24,6 +24,6 @@ queue_rules:
 
 merge_queue:
   mode: serial
-  max_parallel_checks: 1
+  max_parallel_checks: 2
   skip_intermediate_results: false
   queue_controls_comment: false
