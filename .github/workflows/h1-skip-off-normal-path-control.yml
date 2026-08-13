@@ -1,30 +1,25 @@
-name: H1 Mergify fork-origin CI trigger
+name: H1 Skip-Off Normal Path Control
 
 on:
   pull_request:
+  push:
     branches:
-      - h1-fork-prov-workflow-run-target-20260813
-
-permissions:
-  contents: read
+      - main
 
 jobs:
-  ci:
-    name: H1 fork-origin CI trigger
+  safety:
+    name: H1 skip-off normal-path control
     runs-on: ubuntu-latest
     steps:
-      - name: Record triggering pull request context
-        env:
-          H1_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
-          H1_HEAD_FORK: ${{ github.event.pull_request.head.repo.fork }}
-          H1_HEAD_REF: ${{ github.event.pull_request.head.ref }}
-          H1_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          H1_PR_NUMBER: ${{ github.event.pull_request.number }}
+      - uses: actions/checkout@v4
+      - name: Evaluate deterministic non-monotonic state
         shell: bash
         run: |
-          echo "H1_CI_PR=$H1_PR_NUMBER"
-          echo "H1_CI_HEAD_REPO=$H1_HEAD_REPO"
-          echo "H1_CI_HEAD_FORK=$H1_HEAD_FORK"
-          echo "H1_CI_HEAD_REF=$H1_HEAD_REF"
-          echo "H1_CI_HEAD_SHA=$H1_HEAD_SHA"
-          echo "H1_CI_RESULT=success"
+          if [[ -f h1-skip-off-bug.txt && ! -f h1-skip-off-fix.txt ]]; then
+            echo "H1_SKIP_OFF_BUG_WITHOUT_FIX_20260810"
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              sleep 90
+            fi
+            exit 1
+          fi
+          echo "H1_SKIP_OFF_SAFE_20260810"
