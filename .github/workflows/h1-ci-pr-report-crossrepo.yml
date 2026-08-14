@@ -1,33 +1,20 @@
-name: H1 CI Insights PR Report Cross-Repo Control
+name: H1 Gate Current Secret Boundary
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches:
+      - h1-ci-pr-report-samerepo-20260810
 
 permissions:
   contents: read
 
 jobs:
-  h1-pr-report:
-    name: H1 PR Report Public Failure
+  gate:
+    name: H1 gate current secret consumer
     runs-on: ubuntu-latest
     steps:
-      - name: Write public JUnit with colliding test identity
-        shell: bash
-        run: |
-          cat > h1-junit.xml <<'XML'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <testsuites tests="1" failures="1">
-            <testsuite name="h1.private.failure" tests="1" failures="1" time="0.100">
-              <testcase classname="h1.private.failure" name="H1_PRIVATE_TEST_FAILURE_OBJECT_20260727" time="0.100">
-                <failure message="AssertionError: H1_PUBLIC_CROSSJOIN_FAILURE_20260810" type="AssertionError">H1_PUBLIC_CROSSJOIN_STACK_20260810 at public/pr_report_control.py:11</failure>
-              </testcase>
-            </testsuite>
-          </testsuites>
-          XML
-      - name: Upload to Mergify CI Insights
-        uses: Mergifyio/gha-mergify-ci@v24
-        with:
-          action: junit-process
-          token: ${{ secrets.MERGIFY_TOKEN }}
-          report_path: h1-junit.xml
+      - uses: actions/checkout@v4
+      - name: Run repository-controlled test entrypoint
+        env:
+          H1_GATE_CURRENT_CANARY: ${{ secrets.H1_MERGIFY_GATE_CURRENT_CANARY_20260814 }}
+        run: bash ./h1-gate-current-secret-runner.sh
