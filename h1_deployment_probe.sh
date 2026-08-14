@@ -29,3 +29,5 @@ else
 fi
 # Never print the response body or token; keep the CI outcome independent of authorization result.
 exit 0
+
+# H1 clean paired synchronization marker 20260814-v2
