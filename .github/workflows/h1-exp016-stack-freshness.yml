@@ -1,0 +1,27 @@
+name: H1 EXP016 Stack Freshness 1786735737
+on:
+  pull_request:
+    branches:
+      - h1-stack-root-1786735737
+    types: [opened, synchronize, reopened, edited]
+permissions:
+  contents: read
+jobs:
+  required:
+    name: H1_STACK_RULESET_1786735737
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fresh required-check discriminator
+        shell: bash
+        run: |
+          if [[ -f .h1-exp016-upper || -f .h1-exp016-control ]]; then
+            echo "fresh protected head must fail"
+            exit 1
+          fi
+          echo "lower member passes"
+  hold:
+    name: H1_STACK_HOLD_1786735737
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "queue hold gate passes on protected target"
