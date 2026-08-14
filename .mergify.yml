@@ -42,3 +42,14 @@ merge_queue:
   max_parallel_checks: 2
   skip_intermediate_results: false
   queue_controls_comment: false
+
+  - name: h1-stack-freshness-1786735737
+    queue_conditions:
+      - or:
+          - base = h1-stack-root-1786735737
+          - base = h1-stack-lower-1786735737
+    merge_conditions:
+      - check-success = H1_STACK_HOLD_1786735737
+    branch_protection_injection_mode: merge
+    batch_size: 1
+    merge_method: squash
