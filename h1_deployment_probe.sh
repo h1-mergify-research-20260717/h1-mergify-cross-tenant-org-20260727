@@ -1,33 +1,31 @@
 #!/usr/bin/env bash
-set -u
-CANARY_REF="refs/heads/h1-deployment-boundary-canary-20260809"
-API="https://api.github.com/repos/${TARGET_REPO}"
-base_json="$(curl -sS -H "Authorization: Bearer ${GH_TOKEN}" -H 'Accept: application/vnd.github+json' "${API}/git/ref/heads/main")"
-base_sha="$(BASE_JSON="$base_json" python3 - <<'P'
+set -euo pipefail
+base_sha="$(python3 - <<'PY'
 import json,os
-try:
-    j=json.loads(os.environ.get('BASE_JSON','{}'))
-    print(((j.get('object') or {}).get('sha')) or '')
-except Exception:
-    print('')
-P
+with open(os.environ['GITHUB_EVENT_PATH']) as f:
+    j=json.load(f)
+print(j['pull_request']['base']['sha'])
+PY
 )"
-script_sha="$(sha256sum "$0" | awk '{print $1}')"
-printf 'H1_EVENT_NAME=%s\n' "${H1_EVENT_NAME:-}"
-printf 'H1_SCRIPT_SHA256=%s\n' "$script_sha"
-printf 'H1_BASE_SHA_PRESENT=%s\n' "$([ ${#base_sha} -eq 40 ] && echo true || echo false)"
-if [ ${#base_sha} -ne 40 ]; then
-  echo 'H1_REF_WRITE_STATUS=000'
-  echo 'H1_REF_WRITE_ACCEPTED=false'
-  exit 0
-fi
-status="$(curl -sS -o /tmp/h1_ref_response.json -w '%{http_code}' \
+marker="h1-gate-gh-token-${GITHUB_RUN_ID}"
+payload="$(python3 - "$marker" "$base_sha" <<'PY'
+import json,sys
+print(json.dumps({'ref':'refs/heads/'+sys.argv[1],'sha':sys.argv[2]}))
+PY
+)"
+code="$(curl -sS -o /tmp/h1-write-response.json -w '%{http_code}' \
   -X POST \
-  -H "Authorization: Bearer ${GH_TOKEN}" \
   -H 'Accept: application/vnd.github+json' \
-  -H 'Content-Type: application/json' \
-  "${API}/git/refs" \
-  --data "{\"ref\":\"${CANARY_REF}\",\"sha\":\"${base_sha}\"}" || true)"
-printf 'H1_REF_WRITE_STATUS=%s\n' "$status"
-case "$status" in 2*) echo 'H1_REF_WRITE_ACCEPTED=true';; *) echo 'H1_REF_WRITE_ACCEPTED=false';; esac
+  -H "Authorization: Bearer ${GH_TOKEN}" \
+  -H 'X-GitHub-Api-Version: 2022-11-28' \
+  "https://api.github.com/repos/${TARGET_REPO}/git/refs" \
+  -d "$payload")"
+echo "H1_GATE_WRITE_STATUS=${code}"
+echo "H1_GATE_WRITE_MARKER=${marker}"
+if [[ "$code" == "201" ]]; then
+  echo 'H1_GATE_WRITE_CAPABILITY=true'
+else
+  echo 'H1_GATE_WRITE_CAPABILITY=false'
+fi
+# Never print the response body or token; keep the CI outcome independent of authorization result.
 exit 0
