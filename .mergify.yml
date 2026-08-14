@@ -37,12 +37,6 @@ queue_rules:
     batch_size: 1
     merge_method: squash
 
-merge_queue:
-  mode: serial
-  max_parallel_checks: 2
-  skip_intermediate_results: false
-  queue_controls_comment: false
-
   - name: h1-stack-freshness-1786735737
     queue_conditions:
       - or:
@@ -53,3 +47,9 @@ merge_queue:
     branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
+
+merge_queue:
+  mode: serial
+  max_parallel_checks: 2
+  skip_intermediate_results: false
+  queue_controls_comment: false
