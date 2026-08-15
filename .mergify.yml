@@ -46,7 +46,6 @@ queue_rules:
     batch_size: 2
     batch_max_wait_time: 60
     merge_method: merge-batch
-    autoqueue: false
     allow_queue_branch_edit: false
 
 merge_queue:
