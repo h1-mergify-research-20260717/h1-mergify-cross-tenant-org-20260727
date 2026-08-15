@@ -37,6 +37,17 @@ queue_rules:
     batch_size: 1
     merge_method: squash
 
+  - name: h1-exp063-queue-edit-1786816131
+    queue_conditions:
+      - base = h1-exp063-protected-1786816131
+    merge_conditions:
+      - check-success = H1_EXP063_GATE_1786816131
+    branch_protection_injection_mode: merge
+    batch_size: 2
+    batch_max_wait_time: 30
+    merge_method: merge-batch
+    allow_queue_branch_edit: false
+
 merge_queue:
   mode: serial
   max_parallel_checks: 2
