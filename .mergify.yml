@@ -37,17 +37,6 @@ queue_rules:
     batch_size: 1
     merge_method: squash
 
-  - name: h1-exp082-pause-1786833214
-    queue_conditions:
-      - base = h1-exp082-pause-1786833214
-    merge_conditions:
-      - check-success = H1_EXP082_RELEASE_1786833214
-    branch_protection_injection_mode: merge
-    batch_size: 1
-    batch_max_wait_time: 30
-    merge_method: squash
-    allow_queue_branch_edit: false
-
 merge_queue:
   mode: serial
   max_parallel_checks: 2
