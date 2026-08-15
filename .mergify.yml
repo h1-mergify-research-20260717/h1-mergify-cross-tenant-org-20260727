@@ -17,6 +17,7 @@ commands_restrictions:
   queue:
     conditions:
       - sender = onecursor3-gif
+      - title = H1_EXP038_TOP_ALLOWED_1786800343
 
 queue_rules:
   - name: h1-gitrefs-protected-ci-20260814
@@ -36,6 +37,14 @@ queue_rules:
     branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: squash
+
+  - name: h1-exp038-stack-propagation-1786800343
+    queue_conditions:
+      - base ~= ^h1-exp038-
+    merge_conditions: []
+    branch_protection_injection_mode: merge
+    batch_size: 1
+    merge_method: merge
 
 merge_queue:
   mode: serial
