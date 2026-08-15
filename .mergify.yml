@@ -16,8 +16,7 @@ pull_request_rules:
 commands_restrictions:
   queue:
     conditions:
-      - sender = onecursor3-gif
-      - title = H1_EXP038_TOP_ALLOWED_1786800343
+      - sender = {{author}}
 
 queue_rules:
   - name: h1-gitrefs-protected-ci-20260814
