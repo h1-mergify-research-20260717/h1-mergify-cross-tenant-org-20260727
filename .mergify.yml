@@ -40,8 +40,9 @@ queue_rules:
   - name: h1-exp038-stack-propagation-1786800343
     queue_conditions:
       - base ~= ^h1-exp038-
+      - author = onecursor3-gif
     merge_conditions: []
-    branch_protection_injection_mode: none
+    branch_protection_injection_mode: merge
     batch_size: 1
     merge_method: merge
 
