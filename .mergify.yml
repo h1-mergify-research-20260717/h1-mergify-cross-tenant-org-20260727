@@ -42,7 +42,7 @@ queue_rules:
       - base = h1-exp058-merge-batch-1786812863
     merge_conditions:
       - check-success = H1_EXP058_BATCH_GATE_1786812863
-    branch_protection_injection_mode: none
+    branch_protection_injection_mode: merge
     batch_size: 2
     batch_max_wait_time: 60
     merge_method: merge-batch
