@@ -41,7 +41,7 @@ queue_rules:
     queue_conditions:
       - base ~= ^h1-exp038-
     merge_conditions: []
-    branch_protection_injection_mode: merge
+    branch_protection_injection_mode: none
     batch_size: 1
     merge_method: merge
 
